@@ -11,7 +11,12 @@ services:
       GEMINI_API_KEY: 'sk-6JasZEn0f8UadRbgDWTMip4rPvjKhhVbdDhQxC4SzQQAtzum'
       CLAUDE_API_KEY: 'sk-RB9ZAehItduW4zhIZGNZcZ5vemaqhIrYPi0JOQYm1ebt7nCO'
       API_URL_REDIRECT: |
-        {"https://api.openai.com/v1/chat/completions": "https://api.wlai.vip/v1/chat/completions"}
+        {
+        "https://api.openai.com/v1/chat/completions": "https://api.wlai.vip/v1/chat/completions",
+         "https://generativelanguage.googleapis.com/v1beta/models": "https://api.wlai.vip/v1/chat/completions",
+          "https://api.x.ai/v1/chat/completions": "https://api.wlai.vip/v1/chat/completions",
+           "https://api.anthropic.com/v1/messages": "https://api.wlai.vip/v1/chat/completions"
+        }
       USE_PROXY: 'False'
       proxies: |
         {
@@ -21,16 +26,6 @@ services:
       LLM_MODEL: 'gpt-5.1'
       AVAIL_LLM_MODELS: |
         [
-          "linxi-gpt-4-turbo",
-          "linxi-gpt-4",
-          "linxi-gpt-4o",
-          "linxi-gpt-4o-mini",
-          "linxi-claude-3.5-sonnet",
-          "linxi-claude-opus-4",
-          "linxi-gemini-2-flash",
-          "linxi-deepseek-v3",
-          "linxi-qwen-max",
-          "linxi-glm-4-plus",
           "siliconflow-deepseek-v3",
           "siliconflow-qwen3-max",
           "siliconflow-qwen-plus",

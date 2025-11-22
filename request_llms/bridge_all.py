@@ -81,7 +81,6 @@ yimodel_endpoint = "https://api.lingyiwanwu.com/v1/chat/completions"
 deepseekapi_endpoint = "https://api.deepseek.com/v1/chat/completions"
 grok_model_endpoint = "https://api.x.ai/v1/chat/completions"
 volcengine_endpoint = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
-linxi_endpoint = "https://linxi.chat/v1/chat/completions"
 siliconflow_endpoint = "https://api.siliconflow.cn/v1/chat/completions"
 
 if not AZURE_ENDPOINT.endswith('/'): AZURE_ENDPOINT += '/'
@@ -106,7 +105,6 @@ if yimodel_endpoint in API_URL_REDIRECT: yimodel_endpoint = API_URL_REDIRECT[yim
 if deepseekapi_endpoint in API_URL_REDIRECT: deepseekapi_endpoint = API_URL_REDIRECT[deepseekapi_endpoint]
 if grok_model_endpoint in API_URL_REDIRECT: grok_model_endpoint = API_URL_REDIRECT[grok_model_endpoint]
 if volcengine_endpoint in API_URL_REDIRECT: volcengine_endpoint = API_URL_REDIRECT[volcengine_endpoint]
-if linxi_endpoint in API_URL_REDIRECT: linxi_endpoint = API_URL_REDIRECT[linxi_endpoint]
 if siliconflow_endpoint in API_URL_REDIRECT: siliconflow_endpoint = API_URL_REDIRECT[siliconflow_endpoint]
 
 # 获取tokenizer
@@ -734,38 +732,9 @@ model_info.update({
     }
 })
 
-# -=-=-=-=-=-=- Linxi 多模型中转路由 -=-=-=-=-=-=-
-linxi_ui = get_predict_function("LINXI_API_KEY", max_tokens=32000, llm_model_name="model_name")
-linxi_noui = get_predict_function("LINXI_API_KEY", max_tokens=32000, llm_model_name="model_name", use_vision_api=False)
-
-linxi_models = [
-    ("linxi-gpt-4-turbo", 128000),
-    ("linxi-gpt-4", 8192),
-    ("linxi-gpt-4o", 128000),
-    ("linxi-gpt-4o-mini", 128000),
-    ("linxi-claude-3.5-sonnet", 200000),
-    ("linxi-claude-opus-4", 200000),
-    ("linxi-gemini-2-flash", 1000000),
-    ("linxi-deepseek-v3", 64000),
-    ("linxi-qwen-max", 32000),
-    ("linxi-glm-4-plus", 128000),
-]
-
-for model_name, max_token in linxi_models:
-    model_info.update({
-        model_name: {
-            "fn_with_ui": linxi_ui,
-            "fn_without_ui": linxi_noui,
-            "endpoint": linxi_endpoint,
-            "max_token": max_token,
-            "tokenizer": tokenizer_gpt35,
-            "token_cnt": get_token_num_gpt35,
-        },
-    })
-
 # -=-=-=-=-=-=- SiliconFlow 硅基流动路由 -=-=-=-=-=-=-
-siliconflow_ui = get_predict_function("SILICONFLOW_API_KEY", max_tokens=32000, llm_model_name="model_name")
-siliconflow_noui = get_predict_function("SILICONFLOW_API_KEY", max_tokens=32000, llm_model_name="model_name", use_vision_api=False)
+siliconflow_ui = get_predict_function("SILICONFLOW_API_KEY", max_output_token=32000)
+siliconflow_noui = get_predict_function("SILICONFLOW_API_KEY", max_output_token=32000)
 
 siliconflow_models = [
     ("siliconflow-deepseek-v3", 64000, True),  # supports reasoning

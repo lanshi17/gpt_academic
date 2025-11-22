@@ -112,14 +112,15 @@ def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWith
             log_chat(llm_model=llm_kwargs["llm_model"], input_str=inputs, output_str=gpt_replying_buffer)
             yield from update_ui(chatbot=chatbot, history=history)
         if error_match:
-            history = history[-2]  # 错误的不纳入对话
+            history = history[:-2]  # 错误的不纳入对话
             chatbot[-1] = (inputs, gpt_replying_buffer + f"对话错误，请查看message\n\n```\n{error_match.group(1)}\n```")
             yield from update_ui(chatbot=chatbot, history=history)
-            raise RuntimeError('对话错误')
+            return
     if not gpt_replying_buffer:
-        history = history[-2]  # 错误的不纳入对话
+        history = history[:-2]  # 错误的不纳入对话
         chatbot[-1] = (inputs, gpt_replying_buffer + f"触发了Google的安全访问策略，没有回答\n\n```\n{gpt_security_policy}\n```")
         yield from update_ui(chatbot=chatbot, history=history)
+        return
 
 
 if __name__ == '__main__':
