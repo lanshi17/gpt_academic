@@ -108,8 +108,10 @@ if volcengine_endpoint in API_URL_REDIRECT: volcengine_endpoint = API_URL_REDIRE
 # 获取tokenizer
 tokenizer_gpt35 = LazyloadTiktoken("gpt-3.5-turbo")
 tokenizer_gpt4 = LazyloadTiktoken("gpt-4")
+tokenizer_gpt5 = LazyloadTiktoken("gpt-4")  # gpt-5 使用与gpt-4相同的tokenizer
 get_token_num_gpt35 = lambda txt: len(tokenizer_gpt35.encode(txt, disallowed_special=()))
 get_token_num_gpt4 = lambda txt: len(tokenizer_gpt4.encode(txt, disallowed_special=()))
+get_token_num_gpt5 = lambda txt: len(tokenizer_gpt5.encode(txt, disallowed_special=()))
 
 
 # 开始初始化模型
@@ -180,7 +182,6 @@ model_info = {
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
     },
-
     "gpt-4": {
         "fn_with_ui": chatgpt_ui,
         "fn_without_ui": chatgpt_noui,
@@ -396,6 +397,22 @@ model_info = {
         "tokenizer": tokenizer_gpt4,
         "token_cnt": get_token_num_gpt4,
     },
+    "gpt-5": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 8192,
+        "tokenizer": tokenizer_gpt5,
+        "token_cnt": get_token_num_gpt5,
+    },
+    "gpt-5.1": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 8192,
+        "tokenizer": tokenizer_gpt5,
+        "token_cnt": get_token_num_gpt5,
+    },
 
 
     # azure openai
@@ -594,6 +611,89 @@ model_info = {
         "max_token": 1024 * 4,
         "tokenizer": tokenizer_gpt35,
         "token_cnt": get_token_num_gpt35,
+    },
+
+    # 新增模型 - 使用 OpenAI 兼容接口
+    "gemini-3-pro-preview-11-2025": {
+        "fn_with_ui": genai_ui,
+        "fn_without_ui": genai_noui,
+        "endpoint": gemini_endpoint,
+        "max_token": 128000,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
+    },
+
+    "claude-haiku-4-5-20251001": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 8192,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
+    },
+
+    "claude-opus-4-1-20250805": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 200000,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
+    },
+
+    "claude-sonnet-4-20250514-thinking": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 200000,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
+    },
+
+    "claude-sonnet-4-20250514": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 200000,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
+    },
+
+    "deepseek-ai/DeepSeek-V3.1-Terminus": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": deepseekapi_endpoint,
+        "max_token": 200000,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
+    },
+
+    "deepseek-ai/DeepSeek-OCR": {
+        "fn_with_ui": chatgpt_vision_ui,
+        "fn_without_ui": chatgpt_vision_noui,
+        "has_multimodal_capacity": True,
+        "endpoint": deepseekapi_endpoint,
+        "max_token": 128000,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
+    },
+
+    "qwen3-max": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 200000,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
+    },
+
+    "zai-org/GLM-4.6": {
+        "fn_with_ui": chatgpt_ui,
+        "fn_without_ui": chatgpt_noui,
+        "endpoint": openai_endpoint,
+        "max_token": 128000,
+        "tokenizer": tokenizer_gpt4,
+        "token_cnt": get_token_num_gpt4,
     },
 
 }
