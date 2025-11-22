@@ -81,7 +81,6 @@ yimodel_endpoint = "https://api.lingyiwanwu.com/v1/chat/completions"
 deepseekapi_endpoint = "https://api.deepseek.com/v1/chat/completions"
 grok_model_endpoint = "https://api.x.ai/v1/chat/completions"
 volcengine_endpoint = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
-siliconflow_endpoint = "https://api.siliconflow.cn/v1/chat/completions"
 
 if not AZURE_ENDPOINT.endswith('/'): AZURE_ENDPOINT += '/'
 azure_endpoint = AZURE_ENDPOINT + f'openai/deployments/{AZURE_ENGINE}/chat/completions?api-version=2023-05-15'
@@ -105,7 +104,6 @@ if yimodel_endpoint in API_URL_REDIRECT: yimodel_endpoint = API_URL_REDIRECT[yim
 if deepseekapi_endpoint in API_URL_REDIRECT: deepseekapi_endpoint = API_URL_REDIRECT[deepseekapi_endpoint]
 if grok_model_endpoint in API_URL_REDIRECT: grok_model_endpoint = API_URL_REDIRECT[grok_model_endpoint]
 if volcengine_endpoint in API_URL_REDIRECT: volcengine_endpoint = API_URL_REDIRECT[volcengine_endpoint]
-if siliconflow_endpoint in API_URL_REDIRECT: siliconflow_endpoint = API_URL_REDIRECT[siliconflow_endpoint]
 
 # 获取tokenizer
 tokenizer_gpt35 = LazyloadTiktoken("gpt-3.5-turbo")
@@ -732,32 +730,91 @@ model_info.update({
     }
 })
 
-# -=-=-=-=-=-=- SiliconFlow 硅基流动路由 -=-=-=-=-=-=-
-siliconflow_ui = get_predict_function("SILICONFLOW_API_KEY", max_output_token=32000)
-siliconflow_noui = get_predict_function("SILICONFLOW_API_KEY", max_output_token=32000)
+# -=-=-=-=-=-=- 自定义OpenAI兼容API路由 (用于Linxi、SiliconFlow等) -=-=-=-=-=-=-
+# 使用此机制可以动态添加任何OpenAI兼容格式的API支持
+# 配置方式: 在 config_private.py 中设置
+# CUSTOM_API1_URL = "https://api.linxi.chat/v1/chat/completions"
+# CUSTOM_API1_KEY = "your-api-key"
+# CUSTOM_API1_MODEL_MAP = {"custom-model-1": "model-name-at-api"}
 
-siliconflow_models = [
-    ("siliconflow-deepseek-v3", 64000, True),  # supports reasoning
-    ("siliconflow-qwen3-max", 32000, False),
-    ("siliconflow-qwen-plus", 131000, False),
-    ("siliconflow-glm-4-plus", 128000, False),
-    ("siliconflow-hunyuan-turbo", 4096, False),
-    ("siliconflow-yi-1.5-34b", 4000, False),
-    ("siliconflow-mistral-large", 8000, False),
-]
+def _register_custom_api_models():
+    """注册自定义OpenAI兼容API的模型"""
+    try:
+        CUSTOM_API1_URL, CUSTOM_API1_KEY, CUSTOM_API1_MODEL_MAP = get_conf(
+            "CUSTOM_API1_URL", "CUSTOM_API1_KEY", "CUSTOM_API1_MODEL_MAP"
+        )
+    except:
+        CUSTOM_API1_URL = CUSTOM_API1_KEY = ""
+        CUSTOM_API1_MODEL_MAP = {}
+    
+    try:
+        CUSTOM_API2_URL, CUSTOM_API2_KEY, CUSTOM_API2_MODEL_MAP = get_conf(
+            "CUSTOM_API2_URL", "CUSTOM_API2_KEY", "CUSTOM_API2_MODEL_MAP"
+        )
+    except:
+        CUSTOM_API2_URL = CUSTOM_API2_KEY = ""
+        CUSTOM_API2_MODEL_MAP = {}
+    
+    # 注册 Custom API 1
+    if CUSTOM_API1_URL and CUSTOM_API1_KEY and CUSTOM_API1_MODEL_MAP:
+        # 提取API模型名称列表用于前缀移除
+        api_model_names = list(set(CUSTOM_API1_MODEL_MAP.values()))
+        
+        custom_api1_ui = get_predict_function(
+            api_key_conf_name="CUSTOM_API1_KEY",
+            max_output_token=8192,
+            model_remove_prefix=[name + "-" for name in [k.split("-")[0] for k in CUSTOM_API1_MODEL_MAP.keys()]],
+        )
+        custom_api1_noui = get_predict_function(
+            api_key_conf_name="CUSTOM_API1_KEY", 
+            max_output_token=8192,
+            model_remove_prefix=[name + "-" for name in [k.split("-")[0] for k in CUSTOM_API1_MODEL_MAP.keys()]],
+        )
+        
+        for web_model_name, api_model_name in CUSTOM_API1_MODEL_MAP.items():
+            model_config = {
+                "fn_with_ui": custom_api1_ui,
+                "fn_without_ui": custom_api1_noui,
+                "endpoint": CUSTOM_API1_URL,
+                "max_token": 8192,
+                "tokenizer": tokenizer_gpt35,
+                "token_cnt": get_token_num_gpt35,
+            }
+            model_info.update({web_model_name: model_config})
+            if web_model_name not in AVAIL_LLM_MODELS:
+                AVAIL_LLM_MODELS.append(web_model_name)
+        logger.info(f"已注册 Custom API 1，模型数: {len(CUSTOM_API1_MODEL_MAP)}")
+    
+    # 注册 Custom API 2
+    if CUSTOM_API2_URL and CUSTOM_API2_KEY and CUSTOM_API2_MODEL_MAP:
+        api_model_names = list(set(CUSTOM_API2_MODEL_MAP.values()))
+        
+        custom_api2_ui = get_predict_function(
+            api_key_conf_name="CUSTOM_API2_KEY",
+            max_output_token=8192,
+            model_remove_prefix=[name + "-" for name in [k.split("-")[0] for k in CUSTOM_API2_MODEL_MAP.keys()]],
+        )
+        custom_api2_noui = get_predict_function(
+            api_key_conf_name="CUSTOM_API2_KEY",
+            max_output_token=8192,
+            model_remove_prefix=[name + "-" for name in [k.split("-")[0] for k in CUSTOM_API2_MODEL_MAP.keys()]],
+        )
+        
+        for web_model_name, api_model_name in CUSTOM_API2_MODEL_MAP.items():
+            model_config = {
+                "fn_with_ui": custom_api2_ui,
+                "fn_without_ui": custom_api2_noui,
+                "endpoint": CUSTOM_API2_URL,
+                "max_token": 8192,
+                "tokenizer": tokenizer_gpt35,
+                "token_cnt": get_token_num_gpt35,
+            }
+            model_info.update({web_model_name: model_config})
+            if web_model_name not in AVAIL_LLM_MODELS:
+                AVAIL_LLM_MODELS.append(web_model_name)
+        logger.info(f"已注册 Custom API 2，模型数: {len(CUSTOM_API2_MODEL_MAP)}")
 
-for model_name, max_token, enable_reasoning in siliconflow_models:
-    config = {
-        "fn_with_ui": siliconflow_ui,
-        "fn_without_ui": siliconflow_noui,
-        "endpoint": siliconflow_endpoint,
-        "max_token": max_token,
-        "tokenizer": tokenizer_gpt35,
-        "token_cnt": get_token_num_gpt35,
-    }
-    if enable_reasoning:
-        config["enable_reasoning"] = True
-    model_info.update({model_name: config})
+_register_custom_api_models()
 
 # -=-=-=-=-=-=- api2d 对齐支持 -=-=-=-=-=-=-
 for model in AVAIL_LLM_MODELS:

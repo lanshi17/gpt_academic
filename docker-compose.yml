@@ -6,8 +6,21 @@ services:
       # 请查阅 `config.py` 以查看所有的配置信息
       API_KEY: 'sk-1s3ApG63c4aP0EdE2A1anqwhpHvxd25QFmNNjLkoJ8l5jsKW'
       DASHSCOPE_API_KEY: 'sk-9fd4a1a4fefc42048174f9168c7bdd6c'
-      LINXI_API_KEY: 'sk-1s3ApG63c4aP0EdE2A1anqwhpHvxd25QFmNNjLkoJ8l5jsKW'  # 填写您的 Linxi API 密钥，从 https://linxi.chat/ 获取
-      SILICONFLOW_API_KEY: 'sk-qqkhvtehvscrwenhzixflzzmmdgzmzaufwurejxgnfbrxcjo'
+      # 自定义 OpenAI 兼容 API（用于 Linxi、SiliconFlow 等）
+      CUSTOM_API1_URL: 'https://api.linxi.chat/v1/chat/completions'  # 例如: https://api.linxi.chat/v1/chat/completions 或 https://api.siliconflow.cn/v1/chat/completions
+      CUSTOM_API1_KEY: 'sk-1s3ApG63c4aP0EdE2A1anqwhpHvxd25QFmNNjLkoJ8l5jsKW'  # 对应 API 的密钥
+      CUSTOM_API1_MODEL_MAP: '{"gpt-5.1",
+          "gemini-3-pro-preview-11-2025",
+          "claude-haiku-4-5-20251001",
+          "claude-opus-4-1-20250805",
+          "claude-sonnet-4-20250514-thinking",
+          "claude-sonnet-4-20250514",
+          "gpt-5", "grok-4.1", "zai-org/GLM-4.6",}'  # 例如: {"custom-deepseek-v3": "deepseek-v3", "custom-qwen-max": "qwen-max"}
+      # 可选的第二个自定义 API
+      CUSTOM_API2_URL: ' https://api.siliconflow.cn/v1/chat/completions'
+      CUSTOM_API2_KEY: 'sk-qqkhvtehvscrwenhzixflzzmmdgzmzaufwurejxgnfbrxcjo'
+      CUSTOM_API2_MODEL_MAP: '{"deepseek-ai/DeepSeek-V3.1-Terminus",
+          "deepseek-ai/DeepSeek-OCR",}'
       GEMINI_API_KEY: 'sk-6JasZEn0f8UadRbgDWTMip4rPvjKhhVbdDhQxC4SzQQAtzum'
       CLAUDE_API_KEY: 'sk-RB9ZAehItduW4zhIZGNZcZ5vemaqhIrYPi0JOQYm1ebt7nCO'
       API_URL_REDIRECT: |
@@ -26,13 +39,6 @@ services:
       LLM_MODEL: 'gpt-5.1'
       AVAIL_LLM_MODELS: |
         [
-          "siliconflow-deepseek-v3",
-          "siliconflow-qwen3-max",
-          "siliconflow-qwen-plus",
-          "siliconflow-glm-4-plus",
-          "siliconflow-hunyuan-turbo",
-          "siliconflow-yi-1.5-34b",
-          "siliconflow-mistral-large",
           "gpt-5.1",
           "gemini-3-pro-preview-11-2025",
           "claude-haiku-4-5-20251001",
