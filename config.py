@@ -39,6 +39,26 @@ else:
 LLM_MODEL = "gpt-5.1"  # 可选
 
 AVAIL_LLM_MODELS = [
+    # Linxi 多模型中转
+    "linxi-gpt-4-turbo",
+    "linxi-gpt-4",
+    "linxi-gpt-4o",
+    "linxi-gpt-4o-mini",
+    "linxi-claude-3.5-sonnet",
+    "linxi-claude-opus-4",
+    "linxi-gemini-2-flash",
+    "linxi-deepseek-v3",
+    "linxi-qwen-max",
+    "linxi-glm-4-plus",
+    # SiliconFlow 硅基流动
+    "siliconflow-deepseek-v3",
+    "siliconflow-qwen3-max",
+    "siliconflow-qwen-plus",
+    "siliconflow-glm-4-plus",
+    "siliconflow-hunyuan-turbo",
+    "siliconflow-yi-1.5-34b",
+    "siliconflow-mistral-large",
+    # 官方 OpenAI
     "gpt-5.1",
     "gemini-3-pro-preview-11-2025",
     "claude-haiku-4-5-20251001",

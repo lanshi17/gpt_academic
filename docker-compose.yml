@@ -6,7 +6,10 @@ services:
       # 请查阅 `config.py` 以查看所有的配置信息
       API_KEY: 'sk-1s3ApG63c4aP0EdE2A1anqwhpHvxd25QFmNNjLkoJ8l5jsKW'
       DASHSCOPE_API_KEY: 'sk-9fd4a1a4fefc42048174f9168c7bdd6c'
+      LINXI_API_KEY: 'sk-1s3ApG63c4aP0EdE2A1anqwhpHvxd25QFmNNjLkoJ8l5jsKW'  # 填写您的 Linxi API 密钥，从 https://linxi.chat/ 获取
       SILICONFLOW_API_KEY: 'sk-qqkhvtehvscrwenhzixflzzmmdgzmzaufwurejxgnfbrxcjo'
+      GEMINI_API_KEY: 'sk-6JasZEn0f8UadRbgDWTMip4rPvjKhhVbdDhQxC4SzQQAtzum'
+      CLAUDE_API_KEY: 'sk-RB9ZAehItduW4zhIZGNZcZ5vemaqhIrYPi0JOQYm1ebt7nCO'
       API_URL_REDIRECT: |
         {"https://api.openai.com/v1/chat/completions": "https://api.wlai.vip/v1/chat/completions"}
       USE_PROXY: 'False'
@@ -18,6 +21,23 @@ services:
       LLM_MODEL: 'gpt-5.1'
       AVAIL_LLM_MODELS: |
         [
+          "linxi-gpt-4-turbo",
+          "linxi-gpt-4",
+          "linxi-gpt-4o",
+          "linxi-gpt-4o-mini",
+          "linxi-claude-3.5-sonnet",
+          "linxi-claude-opus-4",
+          "linxi-gemini-2-flash",
+          "linxi-deepseek-v3",
+          "linxi-qwen-max",
+          "linxi-glm-4-plus",
+          "siliconflow-deepseek-v3",
+          "siliconflow-qwen3-max",
+          "siliconflow-qwen-plus",
+          "siliconflow-glm-4-plus",
+          "siliconflow-hunyuan-turbo",
+          "siliconflow-yi-1.5-34b",
+          "siliconflow-mistral-large",
           "gpt-5.1",
           "gemini-3-pro-preview-11-2025",
           "claude-haiku-4-5-20251001",
